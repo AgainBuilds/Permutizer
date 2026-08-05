@@ -24,9 +24,7 @@
 <div id="output"></div>
 
 <script>
-// Set this to your deployed backend's URL after deploying, e.g.
-// const API_URL = 'https://permutizer-backend.onrender.com/permutize';
-const API_URL = 'https://YOUR-BACKEND-URL.onrender.com/permutize';
+const API_URL = 'https://permutizer-real.onrender.com/permutize';
 
 document.getElementById('runBtn').addEventListener('click', async () => {
   const word = document.getElementById('wordInput').value.trim();
@@ -39,7 +37,7 @@ document.getElementById('runBtn').addEventListener('click', async () => {
     return;
   }
 
-  statusEl.textContent = 'Running...';
+  statusEl.textContent = 'Running... (first request after inactivity can take up to a minute — the free server is waking up)';
 
   try {
     const res = await fetch(API_URL, {
