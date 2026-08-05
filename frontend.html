@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Permutizer</title>
+<style>
+  body { font-family: monospace; max-width: 600px; margin: 40px auto; padding: 0 16px; }
+  input { font-family: monospace; font-size: 1rem; padding: 6px; width: 200px; }
+  button { font-family: monospace; font-size: 1rem; padding: 6px 14px; margin-left: 6px; cursor: pointer; }
+  #status { color: #666; margin-top: 10px; }
+  #output { white-space: pre-wrap; margin-top: 20px; line-height: 1.4; }
+  .warn { color: #b00; }
+</style>
+</head>
+<body>
+
+<h2>Permutizer</h2>
+<p>Enter a word. This calls the real compiled C++ program running on the server.</p>
+
+<input id="wordInput" type="text" placeholder="e.g. cat" maxlength="9">
+<button id="runBtn">Run</button>
+
+<div id="status"></div>
+<div id="output"></div>
+
+<script>
+// Set this to your deployed backend's URL after deploying, e.g.
+// const API_URL = 'https://permutizer-backend.onrender.com/permutize';
+const API_URL = 'https://YOUR-BACKEND-URL.onrender.com/permutize';
+
+document.getElementById('runBtn').addEventListener('click', async () => {
+  const word = document.getElementById('wordInput').value.trim();
+  const statusEl = document.getElementById('status');
+  const outputEl = document.getElementById('output');
+  outputEl.textContent = '';
+
+  if (!word) {
+    statusEl.innerHTML = '<span class="warn">Error: Empty input!</span>';
+    return;
+  }
+
+  statusEl.textContent = 'Running...';
+
+  try {
+    const res = await fetch(API_URL, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ word })
+    });
+    const data = await res.json();
+
+    if (!res.ok) {
+      statusEl.innerHTML = `<span class="warn">${data.error || 'Something went wrong.'}</span>`;
+      return;
+    }
+
+    statusEl.textContent = '';
+    outputEl.textContent = data.output;
+  } catch (e) {
+    statusEl.innerHTML = '<span class="warn">Could not reach the server.</span>';
+  }
+});
+
+document.getElementById('wordInput').addEventListener('keydown', (e) => {
+  if (e.key === 'Enter') document.getElementById('runBtn').click();
+});
+</script>
+
+</body>
+</html>

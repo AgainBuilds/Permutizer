@@ -2,14 +2,18 @@
 #include <algorithm>
 #include <string>
 #include <fstream>
-#include <set>
+#include <unordered_set>
 #include <cctype>
 using namespace std;
 
-int main() {
-    cout << "Input your name: ";
-    string name;
-    cin >> name;
+int main(int argc, char* argv[]) {
+    if (argc < 2) {
+        cerr << "Error: No word provided!" << endl;
+        return 1;
+    }
+
+    string name = argv[1];
+
     if (name.empty()) {
         cerr << "Error: Empty input!" << endl;
         return 1;
@@ -17,19 +21,21 @@ int main() {
 
     // Calculate factorial (number of permutations)
     long long total = 1;
-    for (int i = 2; i <= name.length(); i++) {
+    for (size_t i = 2; i <= name.length(); i++) {
         total *= i;
     }
 
     // Sort for permutations
     sort(name.begin(), name.end());
+
     cout << "The number of arrangements is: " << total << endl;
+
     cout << "\nAll possible arrangements:" << endl;
     do {
         cout << name << endl;
     } while (next_permutation(name.begin(), name.end()));
 
-    set<string> dictionary;
+    unordered_set<string> dictionary;
     ifstream file("word.txt");
     if (!file.is_open()) {
         cerr << "Error: word.txt not found!" << endl;
@@ -41,6 +47,7 @@ int main() {
         transform(word.begin(), word.end(), word.begin(), ::tolower);
         dictionary.insert(word);
     }
+
     sort(name.begin(), name.end());
     int real_word_count = 0;
     cout << "\nReal English words found:" << endl;
@@ -54,5 +61,6 @@ int main() {
     } while (next_permutation(name.begin(), name.end()));
 
     cout << "\nTotal real English words found: " << real_word_count << endl;
+
     return 0;
 }
